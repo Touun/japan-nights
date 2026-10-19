@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Where they sleep — Overnight stays in Japan</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+
+    :root {
+      --surface: #F9FAFB;
+      --ink: #1A1C1E;
+      --ink-soft: #4D5155;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--surface);
+      color: var(--ink);
+      font-family: 'Noto Sans JP', system-ui, -apple-system, sans-serif;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 64px 24px 88px;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      margin: 0 0 10px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      margin: 0 0 28px;
+    }
+
+    p.lead {
+      margin: 0 0 44px;
+    }
+
+    .map-frame-wrap {
+      width: 100%;
+      border: 1px solid rgba(26, 28, 30, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 1px 2px rgba(26, 28, 30, 0.06), 0 12px 32px rgba(26, 28, 30, 0.10);
+    }
+
+    #map-frame {
+      display: block;
+      width: 100%;
+      height: clamp(520px, 75vh, 780px);
+      border: 0;
+    }
+  
+    /* ---- Added: language nav, content sections and typography (rules above are unchanged) ---- */
+    .lang {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.25rem;
+      max-inline-size: 920px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+      padding-block-start: 1rem;
+    }
+
+    .lang button {
+      font: inherit;
+      font-size: 0.875rem;
+      background: none;
+      border: 0;
+      padding: 0.25rem 0.5rem;
+      color: var(--ink-soft);
+    }
+
+    .lang button[aria-pressed="true"] {
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+    }
+
+    :root[lang="en"] [lang="ja"],
+    :root[lang="ja"] [lang="en"] {
+      display: none;
+    }
+
+    :where(h1, h2, h3) { text-wrap: balance; }
+    :where(p, li) { text-wrap: pretty; }
+    :lang(ja) { line-break: strict; word-break: auto-phrase; }
+    h1:lang(ja), h2:lang(ja), h3:lang(ja) { font-feature-settings: "palt"; }
+
+    .note {
+      max-inline-size: 38em;
+      margin-block: 1rem 0;
+      font-size: 0.875rem;
+      color: var(--ink-soft);
+    }
+
+    section {
+      max-inline-size: 38em;
+      margin-block-start: 4.5rem;
+    }
+
+    section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-block: 0 1rem;
+    }
+
+    section h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-block: 1.75rem 0.5rem;
+    }
+
+    section p { margin-block: 0 1rem; }
+    section ul { margin-block: 0 1rem; padding-inline-start: 1.25em; }
+    section li { margin-block-end: 0.5rem; }
+    .pipeline { color: var(--ink-soft); }
+
+    :where(button) { cursor: pointer; }
+
+    @media (forced-colors: active) {
+      :where(button) { border: 1px solid; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      :root { scroll-behavior: smooth; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="lang" aria-label="Language">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+  </nav>
+  <main class="page">
+    <h1 lang="en">Where they sleep</h1>
+    <h1 lang="ja">どこに泊まるのか</h1>
+    <h2 lang="en">Two different geographies of tourism</h2>
+    <h2 lang="ja">二つの観光の地理</h2>
+    <p lang="en" class="lead">Each tower is a region of Japan; its height is the number of overnight stays. Flip the switch and watch what happens. Drag to explore.</p>
+    <p lang="ja" class="lead">それぞれのタワーは日本の一地域を表し、高さは宿泊数（人泊）です。スイッチを切り替えて、何が起こるか見てください。ドラッグして自由に動かせます。</p>
+
+    <div class="map-frame-wrap">
+      <iframe
+        id="map-frame"
+        title="Map of overnight stays, toggling between Domestic and International layers"
+      ></iframe>
+    </div>
+    <p lang="en" class="note">The map buttons read 国内 (Domestic) and 外国 (International), as in the source statistics. Height is overnight stays: nights, not visitors.</p>
+    <p lang="ja" class="note">地図凡例：地図内のボタンは「国内」と「外国」です。高さは宿泊数（人泊）で、訪問者数ではありません。</p>
+
+    <section>
+      <h2 lang="en">The question</h2>
+    <h2 lang="ja">問い</h2>
+      <p lang="en">It started as a vague brief: “What would be an interesting tourism question to explore?”</p>
+    <p lang="ja">最初は漠然とした課題でした。「観光について、探究する価値のある問いとは何だろう？」</p>
+      <p lang="en">That led to the real question. Tourism statistics are dry, and a table doesn’t let anyone see how stark the gap is between international and domestic overnight stays. How can we show that gap with more cognitive and visual impact?</p>
+    <p lang="ja">そこから本当の問いが生まれました。観光統計は無味乾燥で、国内と外国の宿泊数の差がどれほど大きいかは、表を見ても実感できません。その差を、もっと直感的かつ視覚的に強く示すにはどうすればよいか。</p>
+      <p lang="en">The answer is a story piece.</p>
+    <p lang="ja">その答えが、この地図です。</p>
+    </section>
+
+    <section>
+      <h2 lang="en">Method</h2>
+    <h2 lang="ja">手法</h2>
+      <p lang="en" class="pipeline">Government accommodation statistics (130 regional zones) → GeoPandas → one anchor point per zone → GeoJSON → Mapbox GL JS</p>
+    <p lang="ja" class="pipeline">政府の宿泊統計（130の広域区分） → GeoPandas → 区分ごとに1つのアンカーポイント → GeoJSON → Mapbox GL JS</p>
+      <ul lang="en">
+        <li><strong>Numbers.</strong> Taken as published from the official downloadable CSV (Japan Tourism Agency). Raw files left untouched.</li>
+        <li><strong>Pin placement.</strong> A first pass with AI, then all 130 pins checked by script against OpenStreetMap Nominatim. The test: is it the right prefecture, and roughly the right place inside it?</li>
+        <li><strong>Results.</strong> 127 of 130 pins confirmed in the right prefecture (the 3 Tokyo pins returned no reverse-geocode result). Median distance to the OSM reference: 0.18 km. 122 of 130 pins within 5 km. One zone, Kagoshima Islands, returned no result from Nominatim.</li>
+        <li><strong>Judgement call.</strong> 17 pins came back with a suggested move. I left the 10 under 5 km as they were and looked at the 7 above.</li>
+        <li><strong>Tolerance.</strong> High on purpose. Nobody needs a tower on the exact ward office; the story is in the height of the towers.</li>
+      </ul>
+      <ul lang="ja">
+        <li><strong>数値の出典。</strong>公式にダウンロードできるCSV（観光庁）の値をそのまま使用。元データには手を加えていません。</li>
+        <li><strong>ピンの位置。</strong>最初にAIで配置し、その後、全130地点をスクリプトでOpenStreetMap Nominatimと照合。基準は「正しい都道府県か、その中でおおよそ正しい場所か」。</li>
+        <li><strong>照合の結果。</strong>130地点中127地点で都道府県が一致（東京の3地点は逆ジオコーディングの結果なし）。OSMの基準点との距離の中央値は0.18 km。122地点が5 km以内。鹿児島の島々（1地点）はNominatimで結果が得られませんでした。</li>
+        <li><strong>位置の判断。</strong>17地点で移動の提案が出ました。5 km未満の10地点はそのままにし、5 kmを超える7地点を確認しました。</li>
+        <li><strong>許容範囲。</strong>意図的に大きく取っています。タワーが行政中心地に正確に立っている必要はなく、物語はタワーの高さにあります。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 lang="en">Design decisions</h2>
+    <h2 lang="ja">設計上の判断</h2>
+      <ul lang="en">
+        <li><strong>Verticality does the talking.</strong> 3D towers let people feel the difference instead of reading it.</li>
+        <li><strong>No log scale.</strong> A log scale would compress the very gap the map exists to show. If a tower shoots off the screen, that is the finding.</li>
+        <li><strong>Two states only.</strong> Domestic is a spread of many spikes. International is three skyscrapers.</li>
+        <li><strong>A black-and-white basemap and restrained typography.</strong> Nothing competes with the towers.</li>
+        <li><strong>A fixed opening camera angle, then the user is free.</strong> The first impression is designed; exploration is not locked.</li>
+        <li><strong>No statistics overload.</strong> No charts, tables or rankings. This is a story piece.</li>
+        <li><strong>Language.</strong> The page opens in English, and the nav switches it to Japanese without a reload. The map keeps the official Japanese terms.</li>
+      </ul>
+      <ul lang="ja">
+        <li><strong>縦の高さで語る。</strong>3Dのタワーにより、差を読むのではなく体感できます。</li>
+        <li><strong>対数スケールは使わない。</strong>対数にすると、この地図が見せたい差そのものが圧縮されてしまいます。タワーが画面の外まで突き抜けるなら、それが発見です。</li>
+        <li><strong>表示モードは二つだけ。</strong>国内は多数のスパイクの広がり、外国は3本の超高層ビル。</li>
+        <li><strong>白黒のベースマップと控えめなタイポグラフィ。</strong>タワー以外に目を引くものを置きません。</li>
+        <li><strong>最初のカメラ角度は固定し、その後の探索は自由です。</strong>第一印象は設計し、操作の自由は制限しません。</li>
+        <li><strong>統計を詰め込まない。</strong>グラフも表もランキングもなし。これはストーリーのための作品です。</li>
+        <li><strong>言語。</strong>ページは英語で開き、ナビから再読み込みなしで日本語に切り替えられます。地図内は公式統計の日本語表記のままです。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 lang="en">Limits</h2>
+    <h2 lang="ja">限界</h2>
+      <h3 lang="en">Caveats I judged unlikely to change the story</h3>
+    <h3 lang="ja">物語を変えないと判断した留意点</h3>
+      <ul lang="en">
+        <li>Nights are not visitors. One person staying five nights counts five times, so this is a proxy.</li>
+        <li>International nights don’t show nationality, and may include Japanese nationals living abroad.</li>
+        <li>Domestic nights don’t separate Japanese residents from foreign residents living in Japan.</li>
+      </ul>
+      <ul lang="ja">
+        <li>宿泊数は訪問者数ではありません。5泊した1人は5回数えられるため、あくまで代理指標です。</li>
+        <li>外国の宿泊数は国籍を示さず、海外在住の日本国籍者を含む可能性があります。</li>
+        <li>国内の宿泊数は、日本の居住者と日本に住む外国人を区別しません。</li>
+      </ul>
+      <p lang="en">This is my judgement, not a proof. These would shift individual values, but are unlikely to close a gap this large.</p>
+    <p lang="ja">これは証明ではなく、私の判断です。個々の値は動くかもしれませんが、これほど大きな差を埋めるとは考えにくいです。</p>
+      <h3 lang="en">Real gaps I’d fix before production</h3>
+    <h3 lang="ja">本番投入前に修正すべき実際の課題</h3>
+      <ul lang="en">
+        <li><strong>Accessibility was not a consideration.</strong> No screen reader support, no colour-blind check, no accessibility testing of any kind.</li>
+        <li><strong>What I’d do.</strong> A text or table alternative to the 3D view, a colour-blind check, and keyboard and screen reader testing.</li>
+      </ul>
+      <ul lang="ja">
+        <li><strong>アクセシビリティは考慮していません。</strong>スクリーンリーダー非対応、色覚への配慮なし、アクセシビリティのテストは一切行っていません。</li>
+        <li><strong>対応策。</strong>3Dビューの代わりとなるテキストまたは表、色覚のチェック、キーボードとスクリーンリーダーでのテスト。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 lang="en">Deliverable and stack</h2>
+    <h2 lang="ja">成果物と技術スタック</h2>
+      <p lang="en">The map is a self-contained frame that drops into any web project. I chose that format to show I can go from raw data to code another team can plug into a site: isolation and portability.</p>
+    <p lang="ja">地図は、どのウェブプロジェクトにも組み込める自己完結したフレームです。生データから、他のチームがサイトに組み込めるコードまで一人で届けられることを示すため、この形式を選びました。理由は分離性と可搬性です。</p>
+      <p lang="en"><strong>Stack.</strong> GeoPandas for data preparation, Mapbox GL JS for 3D rendering, plain HTML, CSS and JavaScript.</p>
+    <p lang="ja"><strong>技術スタック。</strong>データ準備にGeoPandas、3D描画にMapbox GL JS、そして素のHTML・CSS・JavaScript。</p>
+      <p lang="en"><strong>Credits.</strong> Japan Tourism Agency (MLIT) accommodation statistics; JNTO statistics; OpenStreetMap contributors (pin verification); Mapbox, attributed inside the map.</p>
+    <p lang="ja"><strong>出典。</strong>観光庁（国土交通省）宿泊旅行統計、日本政府観光局（JNTO）統計、OpenStreetMap contributors（ピンの検証）、Mapbox（地図内にクレジット表示）。</p>
+      <p lang="en"><strong>Token.</strong> A public Mapbox token, in place only for the duration of the interview process.</p>
+    <p lang="ja"><strong>トークン。</strong>公開用のMapboxトークンで、選考期間中のみ有効です。</p>
+    </section>
+
+    <section>
+      <h2 lang="en">Handover</h2>
+    <h2 lang="ja">引き継ぎ</h2>
+      <p lang="en">This was solo work. I keep the scripts and the untouched raw data, but they are not published here. A team handover would need a cleaner process, step-by-step documentation and version control for traceability.</p>
+    <p lang="ja">これは一人での作業でした。スクリプトと手を加えていない生データは手元にありますが、ここでは公開していません。チームへの引き継ぎには、より整理されたプロセス、手順ごとの文書化、そして追跡可能性のためのバージョン管理が必要です。</p>
+    </section>
+
+    <section>
+      <h2 lang="en">Next: why do they differ?</h2>
+    <h2 lang="ja">次に：なぜ違うのか</h2>
+      <p lang="en"><strong>Hypothesis, not a result.</strong> International visitors follow public transport. Where rail service thins out, they don’t come, even for heritage sites.</p>
+    <p lang="ja"><strong>仮説であり、結果ではありません。</strong>外国人旅行者は公共交通に沿って動きます。鉄道網が薄い場所には、文化遺産があっても来ません。</p>
+      <p lang="en"><strong>Test.</strong> Take the 130 Japan Heritage sites, measure how well each is served by rail and bus, and compare that with the international share of overnight stays. Awaji Island is a first test case: rich in heritage, poor bus service, and my hunch is few international stays.</p>
+    <p lang="ja"><strong>検証。</strong>日本遺産130件の各地域について、鉄道とバスでのアクセスの良さを測り、外国の宿泊割合と比べます。最初の検証対象は淡路島です。遺産は豊かでバスは不便、外国人の宿泊は少ないというのが私の仮説です。</p>
+      <p lang="en"><strong>What would disprove it.</strong> Heritage sites with poor transport but a high international share.</p>
+    <p lang="ja"><strong>反証となるもの。</strong>交通が不便なのに、外国の宿泊割合が高い遺産地域。</p>
+    </section>
+
+    <section>
+      <h2 lang="en">Currently exploring</h2>
+    <h2 lang="ja">現在取り組んでいること</h2>
+      <p lang="en">Studying the GeoAI library, to bring my earlier computer vision and machine learning side projects into proper GIS workflows.</p>
+    <p lang="ja">GeoAIライブラリを学習中です。これまでの個人プロジェクトで培ったコンピュータビジョンと機械学習の経験を、本格的なGISワークフローに活かすためです。</p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Self-contained document rendered inside the iframe.
+      // "<\/script>" escapes keep this outer script tag from closing early.
+      var embedHtml = `<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.32.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #F9FAFB;
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+    }
+
+    .toggle {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 10;
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: #F9FAFB;
+      border: 1px solid rgba(26, 28, 30, 0.15);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(26, 28, 30, 0.18);
+      font-family: 'Noto Sans JP', system-ui, sans-serif;
+    }
+
+    .toggle button {
+      appearance: none;
+      border: 0;
+      border-radius: 7px;
+      padding: 7px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #1A1C1E;
+      background: transparent;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .toggle button[aria-pressed="true"] {
+      background: #1A1C1E;
+      color: #F9FAFB;
+    }
+
+    .toggle button:focus-visible {
+      outline: 2px solid #4D5155;
+      outline-offset: 2px;
+    }
+
+    #map-status {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      max-width: 420px;
+      padding: 16px 20px;
+      background: #F9FAFB;
+      color: #1A1C1E;
+      border: 1px solid rgba(26, 28, 30, 0.15);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(26, 28, 30, 0.18);
+      font-family: 'Noto Sans JP', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div class="toggle" id="layer-toggle" hidden>
+    <button type="button" id="btn-domestic" aria-pressed="true">国内</button>
+    <button type="button" id="btn-intl" aria-pressed="false">外国</button>
+  </div>
+
+  <div id="map-status" hidden></div>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.32.0/mapbox-gl.js"><\/script>
+  <script>
+    (function () {
+      'use strict';
+
+      var statusEl = document.getElementById('map-status');
+      var statusShown = false;
+
+      function showStatus(message) {
+        if (statusShown) return;
+        statusShown = true;
+        statusEl.textContent = message;
+        statusEl.hidden = false;
+      }
+
+      if (typeof mapboxgl === 'undefined') {
+        showStatus('Mapbox GL JS could not be loaded from the CDN. Sandboxed previews and offline environments block api.mapbox.com — download this file and open it in a normal browser tab, or serve it over http(s).');
+        return;
+      }
+
+      mapboxgl.accessToken = 'pk.eyJ1IjoiY2hhcHB5bWFwcHloYXBweSIsImEiOiJjbXY3bmJna3Ywa3VlMnlxMTd5bDhrZHN6In0.wggKBOP7ael23EIOUtjLgA';
+
+      var LAYER_DOMESTIC = 'Domestic';
+      var LAYER_INTL = 'International';
+
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/chappymappyhappy/cmv7omcnx009a01smbx3cgmbr',
+        center: [136.34813993665188, 34.72505412599895],
+        zoom: 6.306009998724019,
+        bearing: 0,
+        pitch: 57.5
+      });
+
+      var toggle = document.getElementById('layer-toggle');
+      var btnDomestic = document.getElementById('btn-domestic');
+      var btnIntl = document.getElementById('btn-intl');
+      var active = 'domestic';
+
+      // Show one of the two style layers and hide the other.
+      function showLayer(layerId) {
+        var otherId = layerId === LAYER_DOMESTIC ? LAYER_INTL : LAYER_DOMESTIC;
+        if (map.getLayer(layerId)) {
+          map.setLayoutProperty(layerId, 'visibility', 'visible');
+        }
+        if (map.getLayer(otherId)) {
+          map.setLayoutProperty(otherId, 'visibility', 'none');
+        }
+      }
+
+      function setActive(next) {
+        if (next === active) return;
+        active = next;
+        btnDomestic.setAttribute('aria-pressed', String(next === 'domestic'));
+        btnIntl.setAttribute('aria-pressed', String(next === 'intl'));
+        showLayer(next === 'domestic' ? LAYER_DOMESTIC : LAYER_INTL);
+      }
+
+      btnDomestic.addEventListener('click', function () { setActive('domestic'); });
+      btnIntl.addEventListener('click', function () { setActive('intl'); });
+
+      map.on('load', function () {
+        // Initial state: Domestic layer visible, International hidden.
+        showLayer(LAYER_DOMESTIC);
+        toggle.hidden = false;
+      });
+
+      map.on('error', function (e) {
+        var err = (e && e.error) ? e.error : e;
+        console.error(err);
+        var msg = (err && err.message) ? err.message : String(err);
+        if (/401|unauthorized/i.test(msg)) {
+          showStatus('Map error (401 Unauthorized): this access token is probably restricted to specific URLs. Check the URL restrictions on the token in your Mapbox account settings, or use an unrestricted public token for testing.');
+        } else {
+          showStatus('Map error: ' + msg + ' — see the browser console (F12) for details.');
+        }
+      });
+    })();
+  <\/script>
+</body>
+</html>`;
+
+      document.getElementById('map-frame').srcdoc = embedHtml;
+    })();
+  </script>
+  <script>
+    // Language switch: shows [lang="en"] or [lang="ja"] blocks via the <html lang> attribute.
+    (function () {
+      'use strict';
+      var TITLES = {
+        en: 'Where they sleep \u2014 Overnight stays in Japan',
+        ja: '\u3069\u3053\u306b\u6cca\u307e\u308b\u306e\u304b \u2014 \u65e5\u672c\u306e\u5bbf\u6cca\u7d71\u8a08'
+      };
+      var buttons = document.querySelectorAll('.lang button[data-lang]');
+
+      function setLang(lang) {
+        document.documentElement.lang = lang;
+        document.title = TITLES[lang];
+        buttons.forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+        });
+      }
+
+      buttons.forEach(function (b) {
+        b.addEventListener('click', function () { setLang(b.dataset.lang); });
+      });
+    })();
+  </script>
+</body>
+</html>
